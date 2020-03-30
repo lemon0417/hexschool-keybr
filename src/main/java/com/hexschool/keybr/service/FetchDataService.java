@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexschool.keybr.model.RaceRecordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +23,7 @@ public class FetchDataService {
     @Autowired
     private RestTemplate rest;
 
+    @Cacheable("data")
     public List<RaceRecordDto> getData() {
         ResponseEntity<String> response = rest.getForEntity(url, String.class);
         ObjectMapper mapper = new ObjectMapper();
