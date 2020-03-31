@@ -14,8 +14,12 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 @EnableCaching
 @SpringBootApplication
@@ -39,5 +43,4 @@ public class WebApplication {
         RedisCacheManager cacheManager = RedisCacheManager.builder(factory).cacheDefaults(config).build();
         return cacheManager;
     }
-
 }
