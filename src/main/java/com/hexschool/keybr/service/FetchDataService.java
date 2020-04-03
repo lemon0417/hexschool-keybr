@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexschool.keybr.model.RaceRecordDto;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -59,7 +60,7 @@ public class FetchDataService {
             }
 
             int currCol = currInfo.path("col").asInt();
-            String content = currInfo.path("$t").asText();
+            String content = StringUtils.trimToEmpty(currInfo.path("$t").asText());
             switch (currCol) {
                 case 1:
                 case 5:
@@ -78,7 +79,7 @@ public class FetchDataService {
                     dto.setKeybrLink(content);
                     break;
                 default:
-                    dto.getGrade()[currCol - 7] = content;
+                    dto.getGrade()[currCol - 7] = Double.valueOf(content);
             }
         }
         list.add(dto);
