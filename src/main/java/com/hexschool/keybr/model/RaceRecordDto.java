@@ -20,7 +20,14 @@ public class RaceRecordDto implements Serializable {
 
     private Double[] grade = new Double[21];
 
+    private Double[] range = new Double[2];
+
+    private Double progress = 0.0;
+
+    private boolean persevere = false;
+
     public RaceRecordDto() {
         Arrays.fill(grade, 0.0);
+        Arrays.fill(range, 0.0);
     }
 }

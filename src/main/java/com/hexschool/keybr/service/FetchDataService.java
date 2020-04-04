@@ -12,7 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -20,6 +24,12 @@ public class FetchDataService {
 
     @Value("${google.spreadsheets.url}")
     private String url;
+
+    @Value("${race.start.date}")
+    private String startDate;
+
+    @Value("${race.max.days}")
+    private int maxDays;
 
     @Autowired
     private RestTemplate rest;
@@ -36,7 +46,9 @@ public class FetchDataService {
             e.printStackTrace();
         }
 
-        return transData(entry);
+        List<RaceRecordDto> trans = transData(entry);
+        addInfo(trans);
+        return trans;
     }
 
     public List<RaceRecordDto> transData(JsonNode node) {
@@ -84,5 +96,23 @@ public class FetchDataService {
         }
         list.add(dto);
         return list;
+    }
+
+    private void addInfo(List<RaceRecordDto> list) {
+        long between = ChronoUnit.DAYS.between(LocalDate.parse(startDate), LocalDate.now());
+        final long days = between > maxDays ? maxDays : between;
+
+        list.forEach(x -> {
+            Double[] tempGrades = Arrays.stream(x.getGrade()).filter(c -> c > 0.0).toArray(Double[]::new);
+            int len = tempGrades.length;
+            x.setPersevere(len >= days);
+            if (len > 0) {
+                x.getRange()[0] = tempGrades[0];
+                x.getRange()[1] = tempGrades[len - 1];
+                BigDecimal last = BigDecimal.valueOf(x.getRange()[1]);
+                BigDecimal first = BigDecimal.valueOf(x.getRange()[0]);
+                x.setProgress(last.subtract(first).doubleValue());
+            }
+        });
     }
 }
