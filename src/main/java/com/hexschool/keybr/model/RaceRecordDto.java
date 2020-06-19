@@ -3,9 +3,7 @@ package com.hexschool.keybr.model;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Data
 public class RaceRecordDto implements Serializable {
